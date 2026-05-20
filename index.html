@@ -1,131 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>Harita</title>
-    
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dünya Coğrafyası Bilgi Yarışması v2</title>
+    <title>Dünya Coğrafyası Bilgi Yarışması v3 - Pro</title>
     <style>
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
             --success-color: #2ecc71;
             --danger-color: #e74c3c;
-            --light-bg: #ecf0f1;
+            --light-bg: #f5f7fa;
+            --accent-color: #f39c12;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--light-bg);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .quiz-container {
             background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 700px;
-            padding: 30px;
+            max-width: 650px;
+            padding: 25px;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
         }
 
         h1 {
             color: var(--primary-color);
             text-align: center;
             margin-top: 0;
-            font-size: 24px;
+            font-size: 22px;
             border-bottom: 3px solid var(--secondary-color);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--success-color));
+            transition: width 0.3s ease;
         }
 
         .category-select {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         button.btn-cat {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 15px 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 15px;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
 
-        button.btn-cat:hover, button.btn-cat.active {
+        button.btn-cat:hover {
             background-color: var(--secondary-color);
             transform: translateY(-2px);
         }
 
-        .quiz-screen {
+        .quiz-screen, .result-screen {
             display: none;
         }
 
         .stats {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
             margin-bottom: 20px;
             font-weight: bold;
             color: var(--primary-color);
             background: #e8f4f8;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .timer-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-size: 16px;
         }
 
         .question-box {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--primary-color);
             margin-bottom: 20px;
             text-align: center;
-            min-height: 60px;
+            line-height: 1.5;
+            min-height: 50px;
         }
 
         .flag-display {
-            font-size: 80px;
+            font-size: 70px;
             text-align: center;
             margin-bottom: 15px;
             display: none;
+            line-height: 1;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 10px;
         }
 
         button.option-btn {
             background-color: white;
-            border: 2px solid #bdc3c7;
-            padding: 16px;
-            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            padding: 14px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             text-align: left;
             transition: all 0.2s;
             font-weight: 500;
+            color: #333;
         }
 
         button.option-btn:hover:not([disabled]) {
@@ -135,14 +161,14 @@
 
         button.correct {
             background-color: var(--success-color) !important;
-            color: white;
-            border-color: var(--success-color);
+            color: white !important;
+            border-color: var(--success-color) !important;
         }
 
         button.wrong {
             background-color: var(--danger-color) !important;
-            color: white;
-            border-color: var(--danger-color);
+            color: white !important;
+            border-color: var(--danger-color) !important;
         }
 
         .next-btn {
@@ -152,49 +178,68 @@
             color: white;
             border: none;
             padding: 14px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             font-weight: bold;
         }
 
-        .next-btn:hover {
-            background-color: #2980b9;
+        .result-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .result-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 15px 0;
         }
     </style>
 </head>
 <body>
 
 <div class="quiz-container">
-    <h1>🌍 Coğrafya Keşif Yarışması</h1>
+    <div class="progress-bar-container" id="p-container" style="display:none;">
+        <div class="progress-bar" id="bar"></div>
+    </div>
+
+    <h1 id="main-title">🌍 Coğrafya Keşif Yarışması v3</h1>
     
     <div id="category-screen">
-        <p style="text-align: center; color: #7f8c8d; font-size: 16px;">Her kategoride 20 soru bulunmaktadır. Her doğru cevap 5 puandır. Başarılar!</p>
+        <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 20px;">Her kategoride rastgele 20 soru sorulur. Soru başına 15 saniyeniz var!</p>
         <div class="category-select">
-            <button class="btn-cat" onclick="startQuiz('ulke')">📍 Ülkeler</button>
-            <button class="btn-cat" onclick="startQuiz('bayrak')">🚩 Bayraklar</button>
-            <button class="btn-cat" onclick="startQuiz('kita')">🗺️ Kıtalar</button>
-            <button class="btn-cat" onclick="startQuiz('deniz')">🌊 Deniz & Okyanus</button>
-            <button class="btn-cat" onclick="startQuiz('dag')">🏔️ Dağlar</button>
-            <button class="btn-cat" onclick="startQuiz('boğaz')">⚓ Boğaz & Kanallar</button>
-            <button class="btn-cat" style="grid-column: span 2;" onclick="startQuiz('akarsu')">🏞️ Akarsular</button>
+            <button class="btn-cat" onclick="startQuiz('ulke')"><span>📍</span>Ülkeler</button>
+            <button class="btn-cat" onclick="startQuiz('bayrak')"><span>🚩</span>Bayraklar</button>
+            <button class="btn-cat" onclick="startQuiz('kita')"><span>🗺️</span>Kıtalar</button>
+            <button class="btn-cat" onclick="startQuiz('deniz')"><span>🌊</span>Deniz & Okyanus</button>
+            <button class="btn-cat" onclick="startQuiz('dag')"><span>🏔️</span>Dağlar</button>
+            <button class="btn-cat" onclick="startQuiz('boğaz')"><span>⚓</span>Boğaz & Kanal</button>
+            <button class="btn-cat" style="grid-column: span 2;" onclick="startQuiz('akarsu')"><span>🏞️</span>Akarsular</button>
         </div>
     </div>
 
     <div id="quiz-screen" class="quiz-screen">
         <div class="stats">
-            <span id="current-category">Kategori: </span>
-            <span id="question-counter">Soru: 1 / 20</span>
+            <span id="question-counter">Soru: 1/20</span>
+            <span id="timer" class="timer-badge">15s</span>
             <span id="score-board">Puan: 0</span>
         </div>
         
-        <div id="flag-space" class="flag-display">🇹🇷</div>
-        <div id="question" class="question-box">Soru buraya gelecek?</div>
-        
+        <div id="flag-space" class="flag-display"></div>
+        <div id="question" class="question-box"></div>
         <div class="options-grid" id="options-container"></div>
 
         <button id="next-button" class="next-btn" onclick="nextQuestion()">Sonraki Soru ➡️</button>
+    </div>
+
+    <div id="result-screen" class="result-screen">
+        <h2>Yarışma Tamamlandı! 🎉</h2>
+        <p id="result-category" style="font-weight: bold; color: #7f8c8d;"></p>
+        <div class="result-score" id="final-score">0</div>
+        <p id="result-comment" style="font-size: 16px; margin-bottom: 25px; color: var(--primary-color);"></p>
+        <button class="btn-cat" style="width: 100%;" onclick="resetToMenu()">Ana Menüye Dön 🏠</button>
     </div>
 </div>
 
@@ -202,7 +247,7 @@
 const geographyData = {
     ulke: [
         { q: "Yüzölçümü bakımından dünyanın en büyük ülkesi hangisidir?", a: "Rusya", alt: ["Kanada", "Çin", "ABD"] },
-        { q: "Nüfus bakımından dünyanın en kalabalık ülkesi (2024 itibarıyla) hangisidir?", a: "Hindistan", alt: ["Çin", "ABD", "Endonezya"] },
+        { q: "Nüfus bakımından dünyanın en kalabalık ülkesi hangisidir?", a: "Hindistan", alt: ["Çin", "ABD", "Endonezya"] },
         { q: "Hem Asya hem de Avrupa kıtasında toprağı bulunan ülke hangisidir?", a: "Türkiye", alt: ["İran", "Ukrayna", "Yunanistan"] },
         { q: "Güney Amerika kıtasının yüzölçümü en büyük ülkesi hangisidir?", a: "Brezilya", alt: ["Arjantin", "Şili", "Kolombiya"] },
         { q: "Kanada'nın başkenti neresidir?", a: "Ottawa", alt: ["Toronto", "Montreal", "Vancouver"] },
@@ -235,7 +280,7 @@ const geographyData = {
         { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Arjantin", alt: ["Uruguay", "Honduras", "Yunanistan"], flag: "🇦🇷" },
         { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Güney Afrika", alt: ["Gana", "Senegal", "Nijerya"], flag: "🇿🇦" },
         { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Meksika", alt: ["İtalya", "İspanya", "Portekiz"], flag: "🇲🇽" },
-        { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Avustralya", alt: ["Yeni Zelanda", "ABD", "Fiji"], flag: "🇦🇺" },
+        { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Avustralya", alt: ["Yeni Zelanda", "ABD", "Fiji"], flag: "🇦🇺" }, 
         { q: "Yandaki bayrak hangi ülkeye aittir?", a: "İspanya", alt: ["Portekiz", "Meksika", "Kolombiya"], flag: "🇪🇸" },
         { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Çin", alt: ["Vietnam", "Sovyetler Birliği", "Kuzey Kore"], flag: "🇨🇳" },
         { q: "Yandaki bayrak hangi ülkeye aittir?", a: "Yunanistan", alt: ["Finlandiya", "İsrail", "Kıbrıs"], flag: "🇬🇷" },
@@ -247,7 +292,7 @@ const geographyData = {
     kita: [
         { q: "Dünyanın yüzölçümü en büyük kıtası hangisidir?", a: "Asya", alt: ["Afrika", "Kuzey Amerika", "Avrupa"] },
         { q: "Üzerinde hiçbir bağımsız devlet bulunmayan kıta hangisidir?", a: "Antarktika", alt: ["Okyanusya", "Avrupa", "Güney Amerika"] },
-        { q: "Dünyada en fazla ülkeye (bağımsız devlete) sahip kıta hangisidir?", a: "Afrika", alt: ["Asya", "Avrupa", "Güney Amerika"] },
+        { q: "Dünyada en fazla ülkeye sahip kıta hangisidir?", a: "Afrika", alt: ["Asya", "Avrupa", "Güney Amerika"] },
         { q: "Avrupa ve Asya kıtalarını birbirinden ayıran dağ sırası hangisidir?", a: "Ural Dağları", alt: ["Kafkas Dağları", "Alpler", "Karpatlar"] },
         { q: "Yüzölçümü bakımından en küçük kıta hangisidir?", a: "Okyanusya (Avustralya)", alt: ["Avrupa", "Antarktika", "Güney Amerika"] },
         { q: "Hem Kuzey hem Güney, hem de Doğu ve Batı yarımkürede toprağı bulunan tek kıta hangisidir?", a: "Afrika", alt: ["Asya", "Avrupa", "Güney Amerika"] },
@@ -260,7 +305,7 @@ const geographyData = {
         { q: "Apalaş Dağları ve Büyük Göller hangi kıtada yer alır?", a: "Kuzey Amerika", alt: ["Avrupa", "Güney Amerika", "Asya"] },
         { q: "Nil Nehri hangi kıtanın topraklarında akar?", a: "Afrika", alt: ["Asya", "Güney Amerika", "Avrupa"] },
         { q: "Dünyanın en yüksek dağı olan Everest hangi kıtadadır?", a: "Asya", alt: ["Avrupa", "Güney Amerika", "Kuzey Amerika"] },
-        { q: "Ateş Toprakları (Tierra del Fuego) hangi kıtanın en güney ucunda yer alır?", a: "Güney Amerika", alt: ["Antarktika", "Afrika", "Okyanusya"] },
+        { q: "Ateş Toprakları hangi kıtanın en güney ucunda yer alır?", a: "Güney Amerika", alt: ["Antarktika", "Afrika", "Okyanusya"] },
         { q: "Nüfus artış hızı en yüksek olan kıta hangisidir?", a: "Afrika", alt: ["Asya", "Güney Amerika", "Avrupa"] },
         { q: "İskandinav Yarımadası hangi kıtada bulunur?", a: "Avrupa", alt: ["Kuzey Amerika", "Asya", "Antarktika"] },
         { q: "Tüm toprakları Güney Yarımküre'de yer alan kıtalardan biri hangisidir?", a: "Antarktika", alt: ["Afrika", "Güney Amerika", "Asya"] },
@@ -269,34 +314,34 @@ const geographyData = {
     deniz: [
         { q: "Dünyanın en büyük okyanusu hangisidir?", a: "Büyük Okyanus (Pasifik)", alt: ["Atlas Okyanusu", "Hint Okyanusu", "Arktik Okyanusu"] },
         { q: "Afrika ile Arap Yarımadası arasında yer alan deniz hangisidir?", a: "Kızıldeniz", alt: ["Akdeniz", "Basra Körfezi", "Umman Denizi"] },
-        { q: "Derinliklerinde zehirli hidrojen sülfür gazı bulunduğu için canlı yaşamı olmayan deniz hangisidir?", a: "Karadeniz", alt: ["Kızıldeniz", "Ölüdeniz", "Baltık Denizi"] },
+        { q: "Zehirli hidrojen sülfür gazından dolayı derinlerinde canlı yaşamı olmayan deniz hangisidir?", a: "Karadeniz", alt: ["Kızıldeniz", "Ölüdeniz", "Baltık Denizi"] },
         { q: "Dünyanın en tuzlu denizi aşağıdakilerden hangisidir?", a: "Kızıldeniz", alt: ["Akdeniz", "Karadeniz", "Baltık Denizi"] },
         { q: "Amerika kıtası ile Avrupa/Afrika kıtaları arasında uzanan okyanus hangisidir?", a: "Atlas Okyanusu (Atlantik)", alt: ["Pasifik", "Hint Okyanusu", "Arktik Okyanusu"] },
         { q: "Kuzey Kutbu'nu çevreleyen ve yılın büyük bölümü buzlarla kaplı olan okyanus hangisidir?", a: "Kuzey Buz Denizi (Arktik)", alt: ["Güney Okyanusu", "Atlantik", "Pasifik"] },
         { q: "Dünyanın en büyük iç denizi hangisidir?", a: "Akdeniz", alt: ["Karadeniz", "Hazar Denizi", "Kızıldeniz"] },
         { q: "Sarı Irmak'ın döküldüğü ve Çin'in doğusunda yer alan deniz hangisidir?", a: "Sarı Deniz", alt: ["Japon Denizi", "Doğu Çin Denizi", "Güney Çin Denizi"] },
-        { q: "Asya ile Kuzey Amerika'yı birbirinden ayıran denizin/boğazın bağlı olduğu okyanus hangisidir?", a: "Büyük Okyanus ve Arktik", alt: ["Sadece Atlantik", "Sadece Hint", "Atlantik ve Hint"] },
+        { q: "Asya ile Kuzey Amerika'yı birbirinden ayıran denizin bağlı olduğu okyanus hangisidir?", a: "Büyük Okyanus ve Arktik", alt: ["Sadece Atlantik", "Sadece Hint", "Atlantik ve Hint"] },
         { q: "Hindistan, Avustralya ve Afrika arasında kalan okyanus hangisidir?", a: "Hint Okyanusu", alt: ["Pasifik", "Atlantik", "Arktik"] },
         { q: "Büyük Bariyer Resifi hangi okyanusun sularında yer alır?", a: "Büyük Okyanus (Pasifik)", alt: ["Hint Okyanusu", "Atlas Okyanusu", "Güney Okyanusu"] },
-        { q: "Avrupa'nın kuzeyinde yer alan ve tuzluluk oranı en düşük denizlerden biri olan deniz hangisidir?", a: "Baltık Denizi", alt: ["Akdeniz", "Kızıldeniz", "Adriyatik Denizi"] },
+        { q: "Avrupa'nın kuzeyinde yer alan ve tuzluluk oranı en düşük deniz hangisidir?", a: "Baltık Denizi", alt: ["Akdeniz", "Kızıldeniz", "Adriyatik Denizi"] },
         { q: "İtalya ile Balkan Yarımadası arasında kalan deniz hangisidir?", a: "Adriyatik Denizi", alt: ["Ege Denizi", "Tiren Denizi", "İyon Denizi"] },
-        { q: "Karadeniz'i Azak Denizi'ne bağlayan boğazın bulunduğu deniz bölgesi hangisidir?", a: "Kerç Boğazı / Azak Denizi", alt: ["Marmara Denizi", "Ege Denizi", "Akdeniz"] },
+        { q: "Karadeniz'i Azak Denizi'ne bağlayan boğazın bulunduğu yer hangisidir?", a: "Kerç Boğazı / Azak Denizi", alt: ["Marmara Denizi", "Ege Denizi", "Akdeniz"] },
         { q: "Mariana Çukuru hangi okyanusta bulunmaktadır?", a: "Büyük Okyanus (Pasifik)", alt: ["Atlas Okyanusu", "Hint Okyanusu", "Kuzey Buz Denizi"] },
         { q: "Meksika Körfezi hangi okyanusun bir uzantısıdır?", a: "Atlas Okyanusu (Atlantik)", alt: ["Pasifik", "Hint Okyanusu", "Arktik"] },
         { q: "Bermuda Şeytan Üçgeni olarak bilinen bölge hangi okyanustadır?", a: "Atlas Okyanusu (Atlantik)", alt: ["Büyük Okyanus", "Hint Okyanusu", "Kuzey Buz Denizi"] },
         { q: "Kıbrıs adası hangi denizde yer almaktadır?", a: "Akdeniz", alt: ["Ege Denizi", "Karadeniz", "Kızıldeniz"] },
-        { q: "Dünyanın en büyük kapalı havzası olan göle (büyüklüğünden dolayı deniz denir) ne ad verilir?", a: "Hazar Denizi", alt: ["Aral Gölü", "Baykal Gölü", "Victoria Gölü"] },
+        { q: "Dünyanın en büyük kapalı havzası olan göle ne ad verilir?", a: "Hazar Denizi", alt: ["Aral Gölü", "Baykal Gölü", "Victoria Gölü"] },
         { q: "Japonya ile Asya anakarası arasında kalan deniz hangisidir?", a: "Japon Denizi", alt: ["Sarı Deniz", "Filipin Denizi", "Ohotsk Denizi"] }
     ],
     dag: [
         { q: "Dünyanın en yüksek zirvesi olan Everest hangi sıradağlar üzerindedir?", a: "Himalayalar", alt: ["And Dağları", "Alpler", "Kayalık Dağları"] },
         { q: "Güney Amerika'nın batı kıyısı boyunca uzanan dünyanın en uzun dağ zinciri hangisidir?", a: "And Dağları", alt: ["Alpler", "Apalaşlar", "Ural Dağları"] },
-        { q: "Avrupa'nın en tanınmış sıradağları olan ve İsviçre, Fransa, İtalya'dan geçen dağlar hangisidir?", a: "Alpler", alt: ["Kafkaslar", "Pireneler", "Karpatlar"] },
+        { q: "Avrupa'nın en tanınmış sıradağları olan ve İsviçre, Fransa'dan geçen dağlar hangisidir?", a: "Alpler", alt: ["Kafkaslar", "Pireneler", "Karpatlar"] },
         { q: "Türkiye'nin en yüksek dağı hangisidir?", a: "Ağrı Dağı", alt: ["Erciyes Dağı", "Süphan Dağı", "Kaçkar Dağları"] },
         { q: "Kuzey Amerika'nın batısında uzanan büyük dağ sırası hangisidir?", a: "Kayalık Dağları (Rockies)", alt: ["And Dağları", "Apalaş Dağları", "Alpler"] },
         { q: "Afrika kıtasının en yüksek dağı hangisidir?", a: "Kilimanjaro", alt: ["Atlas Dağları", "Elbruz", "Kenya Dağı"] },
         { q: "Avrupa ile Asya'yı coğrafi olarak birbirinden ayıran dağlar hangisidir?", a: "Ural Dağları", alt: ["Kafkas Dağları", "Altay Dağları", "Toroslar"] },
-        { q: "Kuzeybatı Afrika'da, Fas, Cezayir ve Tunus boyunca uzanan dağ sırası hangisidir?", a: "Atlas Dağları", alt: ["Drakensberg", "Ahaggar", "Tibesti"] },
+        { q: "Kuzeybatı Afrika'da, Fas, Cezayir boyunca uzanan dağ sırası hangisidir?", a: "Atlas Dağları", alt: ["Drakensberg", "Ahaggar", "Tibesti"] },
         { q: "Japonya'nın sembolü haline gelmiş ünlü volkanik dağ hangisidir?", a: "Fuji Dağı", alt: ["Vezüv", "Etna", "Krakatau"] },
         { q: "İspanya ve Fransa sınırını oluşturan dağ sırası hangisidir?", a: "Pireneler", alt: ["Alpler", "Apeninler", "Balkan Dağları"] },
         { q: "Dünyanın en yüksek ikinci zirvesi olan K2 hangi dağ sırasındadır?", a: "Karakurum", alt: ["Himalayalar", "Hindukuş", "Pamir"] },
@@ -308,51 +353,51 @@ const geographyData = {
         { q: "İtalya'da bulunan ve Pompei şehrini yok eden ünlü yanardağ hangisidir?", a: "Vezüv", alt: ["Etna", "Stromboli", "Santorini"] },
         { q: "Orta Asya'da 'Dünyanın Çatısı' olarak adlandırılan dağlık bölge hangisidir?", a: "Pamir Dağları", alt: ["Altay Dağları", "Tanrı Dağları", "Ural Dağları"] },
         { q: "Romanya merkezli olarak Doğu Avrupa'da yay çizen dağ sırası hangisidir?", a: "Karpatlar", alt: ["Balkan Dağları", "Dinar Alpleri", "Kafkaslar"] },
-        { q: "Erzurum-Kars platosunu da içine alan, Türkiye'nin doğusundaki yüksek dağlık alana ne ad verilir?", a: "Kuzey Anadolu Dağları (Doğu uzantısı)", alt: ["Toroslar", "Batı Anadolu Dağları", "Nur Dağları"] }
+        { q: "Türkiye'nin doğusundaki yüksek dağlık alana ne ad verilir?", a: "Kuzey Anadolu Dağları (Doğu)", alt: ["Toroslar", "Batı Anadolu Dağları", "Nur Dağları"] }
     ],
     boğaz: [
         { q: "Akdeniz'i Atlas Okyanusu'na bağlayan ve Avrupa ile Afrika'yı ayıran boğaz hangisidir?", a: "Cebelitarık Boğazı", alt: ["Hürmüz Boğazı", "Babülmendep Boğazı", "Süveyş Kanalı"] },
-        { q: "Basra Körfezi'ni Umman Denizi'ne bağlayan, dünya petrol ticaretinin en önemli boğazı hangisidir?", a: "Hürmüz Boğazı", alt: ["Malakka Boğazı", "Macellan Boğazı", "Bering Boğazı"] },
-        { q: "Büyük Okyanus ile Kuzey Buz Denizi'ni birleştiren, Asya ve Amerika'yı ayıran boğaz hangisidir?", a: "Bering Boğazı", alt: ["Drake Geçidi", "Macellan Boğazı", "Cebelitarık"] },
-        { q: "Kızıldeniz'i Hint Okyanusu'na (Aden Körfezi) bağlayan boğaz hangisidir?", a: "Babülmendep Boğazı", alt: ["Süveyş Kanalı", "Hürmüz Boğazı", "Cebelitarık"] },
-        { q: "Güney Amerika'nın en güney ucunda yer alan ve Atlantik ile Pasifik'i bağlayan boğaz hangisidir?", a: "Macellan Boğazı", alt: ["Panama Kanalı", "Drake Geçidi", "Bering Boğazı"] },
-        { q: "Hint Okyanusu ile Büyük Okyanus arasında, Endonezya ve Malezya'yı ayıran işlek boğaz hangisidir?", a: "Malakka Boğazı", alt: ["Sunda Boğazı", "Hürmüz Boğazı", "Makassar Boğazı"] },
+        { q: "Basra Körfezi'ni Umman Denizi'ne bağlayan petrol ticaretinin en önemli boğazı hangisidir?", a: "Hürmüz Boğazı", alt: ["Malakka Boğazı", "Macellan Boğazı", "Bering Boğazı"] },
+        { q: "Büyük Okyanus ile Kuzey Buz Denizi'ni birleştiren boğaz hangisidir?", a: "Bering Boğazı", alt: ["Drake Geçidi", "Macellan Boğazı", "Cebelitarık"] },
+        { q: "Kızıldeniz'i Hint Okyanusu'na bağlayan boğaz hangisidir?", a: "Babülmendep Boğazı", alt: ["Süveyş Kanalı", "Hürmüz Boğazı", "Cebelitarık"] },
+        { q: "Güney Amerika'nın en güney ucunda yer alan doğal boğaz hangisidir?", a: "Macellan Boğazı", alt: ["Panama Kanalı", "Drake Geçidi", "Bering Boğazı"] },
+        { q: "Hint Okyanusu ile Büyük Okyanus arasında, Endonezya ve Malezya'yı ayıran boğaz hangisidir?", a: "Malakka Boğazı", alt: ["Sunda Boğazı", "Hürmüz Boğazı", "Makassar Boğazı"] },
         { q: "Karadeniz'i Marmara Denizi'ne bağlayan boğaz hangisidir?", a: "İstanbul Boğazı", alt: ["Çanakkale Boğazı", "Kerç Boğazı", "Korint Kanalı"] },
         { q: "Marmara Denizi'ni Ege Denizi'ne bağlayan boğaz hangisidir?", a: "Çanakkale Boğazı", alt: ["İstanbul Boğazı", "Cebelitarık", "Messina Boğazı"] },
-        { q: "İngiltere ile Fransa'yı (Avrupa anakarası) birbirinden ayıran deniz geçidi hangisidir?", a: "Dover Boğazı (Manş)", alt: ["Kiel Kanalı", "Cebelitarık", "Otranto Boğazı"] },
+        { q: "İngiltere ile Fransa'yı birbirinden ayıran deniz geçidi hangisidir?", a: "Dover Boğazı (Manş)", alt: ["Kiel Kanalı", "Cebelitarık", "Otranto Boğazı"] },
         { q: "Akdeniz ile Kızıldeniz'i birbirine bağlayan yapay su yolu hangisidir?", a: "Süveyş Kanalı", alt: ["Panama Kanalı", "Korint Kanalı", "Kiel Kanalı"] },
-        { q: "Atlas Okyanusu ile Büyük Okyanus'u (Pasifik) birbirine bağlayan Orta Amerika'daki yapay su yolu hangisidir?", a: "Panama Kanalı", alt: ["Süveyş Kanalı", "Macellan Boğazı", "Nikaragua Kanalı"] },
-        { q: "Almanya sınırları içinde yer alan ve Baltık Denizi'ni Kuzey Denizi'ne bağlayan kanal hangisidir?", a: "Kiel Kanalı", alt: ["Panama Kanalı", "Süveyş Kanalı", "Korint Kanalı"] },
+        { q: "Atlas Okyanusu ile Büyük Okyanus'u bağlayan Orta Amerika'daki yapay kanal hangisidir?", a: "Panama Kanalı", alt: ["Süveyş Kanalı", "Macellan Boğazı", "Nikaragua Kanalı"] },
+        { q: "Almanya sınırlarında yer alan ve Baltık Denizi'ni Kuzey Denizi'ne bağlayan kanal hangisidir?", a: "Kiel Kanalı", alt: ["Panama Kanalı", "Süveyş Kanalı", "Korint Kanalı"] },
         { q: "Yunanistan'da Mora Yarımadası'nı anakaradan ayıran çok dar yapay kanal hangisidir?", a: "Korint Kanalı", alt: ["Kiel Kanalı", "Süveyş Kanalı", "İstanbul Boğazı"] },
-        { q: "İtalya'nın çizme şeklindeki ucu ile Sicilya Adası'nı birbirinden ayıran boğaz hangisidir?", a: "Messina Boğazı", alt: ["Otranto Boğazı", "Bonifacio Boğazı", "Cebelitarık"] },
+        { q: "İtalya'nın ucu ile Sicilya Adası'nı birbirinden ayıran boğaz hangisidir?", a: "Messina Boğazı", alt: ["Otranto Boğazı", "Bonifacio Boğazı", "Cebelitarık"] },
         { q: "ABD (Florida) ile Küba arasında yer alan boğaz hangisidir?", a: "Florida Boğazı", alt: ["Yucatan Boğazı", "Bering Boğazı", "Macellan Boğazı"] },
-        { q: "İtalya ile Arnavutluk arasında yer alan ve Adriyatik Denizi'nin girişini oluşturan boğaz hangisidir?", a: "Otranto Boğazı", alt: ["Messina Boğazı", "Dardanel", "Bosfor"] },
+        { q: "İtalya ile Arnavutluk arasında yer alan Adriyatik girişindeki boğaz hangisidir?", a: "Otranto Boğazı", alt: ["Messina Boğazı", "Dardanel", "Bosfor"] },
         { q: "Karadeniz ile Azak Denizi'ni birbirine bağlayan boğaz hangisidir?", a: "Kerç Boğazı", alt: ["İstanbul Boğazı", "Çanakkale Boğazı", "Dover Boğazı"] },
         { q: "Hindistan ile Sri Lanka adasını birbirinden ayıran boğaz hangisidir?", a: "Palk Boğazı", alt: ["Malakka Boğazı", "Sunda Boğazı", "Hürmüz Boğazı"] },
-        { q: "Güney Amerika'nın güney ucu (Cape Horn) ile Antarktika arasındaki fırtınalı geçit hangisidir?", a: "Drake Geçidi", alt: ["Macellan Boğazı", "Bering Boğazı", "Malakka Boğazı"] },
-        { q: "İstanbul Boğazı'nın uluslararası alanda kullanılan İngilizce adı nedir?", a: "Bosphorus", alt: ["Dardanelles", "Strait of Gibraltar", "English Channel"] }
+        { q: "Güney Amerika ile Antarktika arasındaki fırtınalı geçit hangisidir?", a: "Drake Geçidi", alt: ["Macellan Boğazı", "Bering Boğazı", "Malakka Boğazı"] },
+        { q: "İstanbul Boğazı'nın uluslararası alanda kullanılan adı nedir?", a: "Bosphorus", alt: ["Dardanelles", "Strait of Gibraltar", "English Channel"] }
     ],
     akarsu: [
         { q: "Dünyanın en uzun nehri kabul edilen ve Afrika'da yer alan akarsu hangisidir?", a: "Nil Nehri", alt: ["Amazon Nehri", "Mississippi", "Volga"] },
-        { q: "Debisi (su taşıma kapasitesi) ve havzası en büyük olan Güney Amerika nehri hangisidir?", a: "Amazon Nehri", alt: ["Nil Nehri", "Kongo Nehri", "Parana Nehri"] },
+        { q: "Debisi ve havzası en büyük olan Güney Amerika nehri hangisidir?", a: "Amazon Nehri", alt: ["Nil Nehri", "Kongo Nehri", "Parana Nehri"] },
         { q: "Avrupa'nın en uzun nehri olan ve Hazar Denizi'ne dökülen akarsu hangisidir?", a: "Volga Nehri", alt: ["Tuna Nehri", "Ren Nehri", "Elbe Nehri"] },
-        { q: "Kuzey Amerika'nın en büyük nehir sistemi olan ve Meksika Körfezi'ne dökülen nehir hangisidir?", a: "Mississippi Nehri", alt: ["Colorado Nehri", "Mackenzie Nehri", "St. Lawrence"] },
+        { q: "Kuzey Amerika'nın en büyük nehir sistemi olan akarsu hangisidir?", a: "Mississippi Nehri", alt: ["Colorado Nehri", "Mackenzie Nehri", "St. Lawrence"] },
         { q: "Asya'nın en uzun, dünyanın ise 3. uzun nehri olan Çin'deki akarsu hangisidir?", a: "Yangtze (Gök Irmak)", alt: ["Sarı Irmak", "Mekong Nehri", "Ganj Nehri"] },
         { q: "Hindular tarafından kutsal sayılan ve Hindistan'da akan nehir hangisidir?", a: "Ganj Nehri", alt: ["İndus Nehri", "Brahmaputra", "Mekong"] },
-        { q: "Avrupa'da 10 farklı ülkeden geçerek Karadeniz'e dökülen önemli nehir hangisidir?", a: "Tuna Nehri", alt: ["Ren Nehri", "Volga Nehri", "Sen Nehri"] },
+        { q: "Avrupa'da 10 farklı ülkeden geçerek Karadeniz'e dökülen nehir hangisidir?", a: "Tuna Nehri", alt: ["Ren Nehri", "Volga Nehri", "Sen Nehri"] },
         { q: "Türkiye'nin en uzun akarsuyu olan ve Karadeniz'e dökülen nehir hangisidir?", a: "Kızılırmak", alt: ["Yeşilırmak", "Sakarya", "Fırat"] },
-        { q: "Türkiye'den doğup Basra Körfezi'ne dökülen ve Mezopotamya'ya hayat veren iki nehir hangileridir?", a: "Fırat ve Dicle", alt: ["Seyhan ve Ceyhan", "Kızılırmak ve Yeşilırmak", "Gediz ve Büyük Menderes"] },
+        { q: "Türkiye'den doğup Basra Körfezi'ne dökülen iki nehir hangileridir?", a: "Fırat ve Dicle", alt: ["Seyhan ve Ceyhan", "Kızılırmak ve Yeşilırmak", "Gediz ve Büyük Menderes"] },
         { q: "Afrika'da Ekvator çizgisini iki kez kesen tek nehir hangisidir?", a: "Kongo Nehri", alt: ["Nil Nehri", "Nijer Nehri", "Zambezi Nehri"] },
         { q: "Paris şehrinin ortasından geçen ünlü Fransız nehri hangisidir?", a: "Sen Nehri", alt: ["Ren Nehri", "Thames Nehri", "Tuna Nehri"] },
         { q: "Londra şehrinin içinden geçen Birleşik Krallık'taki ünlü nehir hangisidir?", a: "Thames Nehri", alt: ["Sen Nehri", "Ren Nehri", "Elbe Nehri"] },
-        { q: "Büyük Kanyon'u (Grand Canyon) yaratan ABD'deki nehir hangisidir?", a: "Colorado Nehri", alt: ["Mississippi", "Missouri", "Columbia"] },
-        { q: "Güneydoğu Asya'da 6 ülkeden geçen ve 'Güneydoğu Asya'nın Tunası' denilen nehir hangisidir?", a: "Mekong Nehri", alt: ["Ganj", "İndus", "İravadi"] },
+        { q: "Büyük Kanyon'u yaratan ABD'deki nehir hangisidir?", a: "Colorado Nehri", alt: ["Mississippi", "Missouri", "Columbia"] },
+        { q: "Güneydoğu Asya'da 6 ülkeden geçen nehir hangisidir?", a: "Mekong Nehri", alt: ["Ganj", "İndus", "İravadi"] },
         { q: "Pakistan'ın en uzun ve en önemli nehri hangisidir?", a: "İndus Nehri", alt: ["Ganj", "Brahmaputra", "Yamuna"] },
-        { q: "Batı Afrika'nın en büyük nehri olan ve Gine Körfezi'ne dökülen akarsu hangisidir?", a: "Nijer Nehri", alt: ["Kongo", "Senegal", "Zambezi"] },
-        { q: "Güney Amerika'da Amazon'dan sonraki en büyük nehir sistemi hangisidir?", a: "Parana Nehri", alt: ["Orinoco", "Sao Francisco", "Magdalena"] },
+        { q: "Batı Afrika'nın en büyük nehri olan akarsu hangisidir?", a: "Nijer Nehri", alt: ["Kongo", "Senegal", "Zambezi"] },
+        { q: "Güney Amerika'da Amazon'dan sonraki en büyük nehir hangisidir?", a: "Parana Nehri", alt: ["Orinoco", "Sao Francisco", "Magdalena"] },
         { q: "Victoria Şelaleleri hangi Afrika nehri üzerinde yer almaktadır?", a: "Zambezi Nehri", alt: ["Kongo Nehri", "Nil Nehri", "Orange Nehri"] },
         { q: "Çin medeniyetinin beşiği sayılan ve renginden dolayı bu ismi alan nehir hangisidir?", a: "Sarı Irmak (Huang He)", alt: ["Yangtze", "Amur", "İnci Nehri"] },
-        { q: "Almanya ve Hollanda üzerinden geçerek Kuzey Denizi'ne dökülen sanayi bölgesi nehri hangisidir?", a: "Ren Nehri", alt: ["Tuna Nehri", "Elbe Nehri", "Oder Nehri"] }
+        { q: "Almanya ve Hollanda üzerinden geçerek Kuzey Denizi'ne dökülen nehir hangisidir?", a: "Ren Nehri", alt: ["Tuna Nehri", "Elbe Nehri", "Oder Nehri"] }
     ]
 };
 
@@ -360,6 +405,10 @@ let currentCategory = '';
 let currentQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
+let timerInterval;
+let timeLeft = 15;
+
+const catTitles = {ulke: "Ülkeler", bayrak: "Bayraklar", kita: "Kıtalar", deniz: "Denizler & Okyanuslar", dag: "Dağlar", boğaz: "Boğazlar & Kanallar", akarsu: "Akarsular"};
 
 function startQuiz(category) {
     currentCategory = category;
@@ -368,18 +417,54 @@ function startQuiz(category) {
     score = 0;
     
     document.getElementById('category-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'none';
     document.getElementById('quiz-screen').style.display = 'block';
-    
-    const catTitles = {ulke: "Ülkeler", bayrak: "Bayraklar", kita: "Kıtalar", deniz: "Denizler & Okyanuslar", dag: "Dağlar", boğaz: "Boğazlar & Kanallar", akarsu: "Akarsular"};
-    document.getElementById('current-category').innerText = "Kategori: " + catTitles[category];
+    document.getElementById('p-container').style.display = 'block';
+    document.getElementById('main-title').style.display = 'none';
     
     showQuestion();
+}
+
+function startTimer() {
+    timeLeft = 15;
+    document.getElementById('timer').innerText = timeLeft + "s";
+    document.getElementById('timer').style.backgroundColor = "var(--accent-color)";
+    
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft + "s";
+        
+        if (timeLeft <= 5) {
+            document.getElementById('timer').style.backgroundColor = "var(--danger-color)";
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timeOutHandler();
+        }
+    }, 1000);
+}
+
+function timeOutHandler() {
+    const buttons = document.querySelectorAll('.option-btn');
+    let correctOpt = currentQuestions[currentQuestionIndex].a;
+    
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText === correctOpt) btn.classList.add('correct');
+    });
+    
+    document.getElementById('next-button').style.display = 'block';
 }
 
 function showQuestion() {
     document.getElementById('next-button').style.display = 'none';
     document.getElementById('question-counter').innerText = `Soru: ${currentQuestionIndex + 1} / 20`;
     document.getElementById('score-board').innerText = `Puan: ${score}`;
+    
+    let progressPercent = ((currentQuestionIndex) / 20) * 100;
+    document.getElementById('bar').style.width = `${progressPercent}%`;
     
     let qData = currentQuestions[currentQuestionIndex];
     
@@ -392,7 +477,6 @@ function showQuestion() {
     }
     
     document.getElementById('question').innerText = qData.q;
-    
     let options = [qData.a, ...qData.alt].sort(() => Math.random() - 0.5);
     
     const container = document.getElementById('options-container');
@@ -405,9 +489,12 @@ function showQuestion() {
         btn.onclick = () => checkAnswer(btn, opt, qData.a);
         container.appendChild(btn);
     });
+    
+    startTimer();
 }
 
 function checkAnswer(selectedBtn, selectedOpt, correctOpt) {
+    clearInterval(timerInterval);
     const buttons = document.querySelectorAll('.option-btn');
     buttons.forEach(btn => btn.disabled = true); 
     
@@ -430,16 +517,34 @@ function nextQuestion() {
     if (currentQuestionIndex < 20) {
         showQuestion();
     } else {
-        alert(`Tebrikler! Bu kategorideki 20 soruyu tamamladınız.\nKazanılan Toplam Puan: ${score} / 100`);
-        document.getElementById('quiz-screen').style.display = 'none';
-        document.getElementById('category-screen').style.display = 'block';
+        showResults();
     }
+}
+
+function showResults() {
+    clearInterval(timerInterval);
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('p-container').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    
+    document.getElementById('result-category').innerText = `Kategori: ${catTitles[currentCategory]}`;
+    document.getElementById('final-score').innerText = `${score} / 100`;
+    
+    let comment = "";
+    if (score === 100) comment = "Mükemmel! Tam bir dünya gezgini ve coğrafya profesörüsün! 🌟🧭";
+    else if (score >= 75) comment = "Harika iş! Coğrafya bilgin oldukça yüksek seviyede. 🗺️✨";
+    else if (score >= 50) comment = "Fena değil! Dünyayı biraz daha keşfederek kendini geliştirebilirsin. 🧭";
+    else comment = "Bir dahaki sefere daha iyi olacaktır. Haritayı biraz daha incelemeye ne dersin? 🔍";
+    
+    document.getElementById('result-comment').innerText = comment;
+}
+
+function resetToMenu() {
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('category-screen').style.display = 'block';
+    document.getElementById('main-title').style.display = 'block';
 }
 </script>
 
 </body>
-</html>
-    
-  </body>
-  
 </html>
